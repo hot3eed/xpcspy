@@ -19,7 +19,7 @@ var p_xpc_connection_call_event_handler = p_xpc_data_set_value.sub(0xBFC);
 
 
 var _onEnterHandler = function(symbol, args) {
-	var ts = Date.now();
+	const ts = Date.now();  // Resolution isn't 
 	
 	/*
 	 * Send a message to the application as soon as a new function is traced,
@@ -36,9 +36,11 @@ var _onEnterHandler = function(symbol, args) {
 	
 	send({
 		type: 'agent:trace:data',
-		message: {
+		message: 
+		{
 			timestamp: ts, 
-			data: { conn: p_connection } }
+			data: { conn: ObjC.Object(p_connection), message: ObjC.Object(p_xdict)  } 
+		}
 	});
 }
 
