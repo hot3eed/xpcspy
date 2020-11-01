@@ -21,7 +21,7 @@ class Agent:
     def __init__(self, process):
         _pending_events = OrderedDict()
         self.device = get_local_device()
-        self._script_path = Path.joinpath(Path().absolute(), 'xpci/agent/interceptor.js') 
+        self._script_path = Path.joinpath(Path().absolute(), 'agent/interceptor.js') 
         with open(self._script_path) as src_f:
             self._script_src = src_f.read()
         session = frida.attach(process)  # `process` is str or int depending on whether it's a name or pid
@@ -55,7 +55,7 @@ class Agent:
                 if last_event.data == None:
                     return
                 #print(f"Pop {ts} {last_event}")
-                print(ts, last_event.symbol, last_event.dat)
+                print(ts, last_event.symbol, last_event.data)
                 events_stack.pop()
             del _pending_events[ts]
 

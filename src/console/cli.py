@@ -2,13 +2,13 @@ import sys
 
 import click
 
-from ..utils.agent import Agent
+from utils.agent import Agent
 
 
 @click.command()
-@click.argument('process')
-def main(process):
+@click.argument('target')
+def main(target):
     """The main XPC-intercepting command"""
-    Agent(process) 
+    Agent(target) 
     sys.stdin.read()
 
