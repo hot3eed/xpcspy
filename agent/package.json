@@ -1,0 +1,19 @@
+{
+  "name": "xpci",
+  "version": "0.0.0",
+  "description": "XPC message interceptor.",
+  "main": "src/index.ts",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "frida-compile src/index.ts -o ../_agent.js",
+    "watch": "frida-compile src/index.ts -o ../_agent.js -w"
+  },
+  "author": "hot3eed",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/frida-gum": "^16.2.0",
+    "@types/node": "^14.14.6",
+    "frida-compile": "^10.0.0"
+  }
+}

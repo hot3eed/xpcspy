@@ -1,7 +1,11 @@
 /**
  * TODO:
- * 	- Synchronize messages between Frida script and server.
+ * 	- (DONE) Synchronize messages between Frida script and server.
+ * 	- Add different non-exported function pointers for different OS's.
+ * 	- Add incoming and outgoing messages filter.
+ * 	- Add XPC event handler backtrace viewer.
 */
+
 
 /*
  * Sending messages
@@ -14,9 +18,14 @@ var p_xpc_connection_send_notification = Module.getExportByName(null, "xpc_conne
 /*
  * Receiving messages
 */
+
+/* for iOS
 var p_xpc_data_set_value = Module.getExportByName(null, "_xpc_data_set_value");  // This is the nearest global symbol to the one we're hooking, as of iOS 13.6
 var p_xpc_connection_call_event_handler = p_xpc_data_set_value.sub(0xBFC);
+*/
 
+var p_xpc_connection_suspend = Module.getExportByName(null, "xpc_connection_suspend");
+var p_xpc_connection_call_event_handler = p_xpc_connection_suspend.add(0x3B);
 
 var _onEnterHandler = function(symbol, args) {
 	const ts = Date.now();  // Resolution isn't 
@@ -39,7 +48,7 @@ var _onEnterHandler = function(symbol, args) {
 		message: 
 		{
 			timestamp: ts, 
-			data: { conn: ObjC.Object(p_connection), message: ObjC.Object(p_xdict)  } 
+			data: { conn: ObjC.Object(p_connection).debugDescription().toString(), message: ObjC.Object(p_xdict).debugDescription().toString()  } 
 		}
 	});
 }
