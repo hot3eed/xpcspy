@@ -1,7 +1,6 @@
 from pathlib import Path
 from collections import OrderedDict
 
-from frida import get_local_device
 import frida
 import click
 
@@ -16,16 +15,16 @@ class Event:
 
 
 class Agent:
-    def __init__(self, process):
-        self.device = get_local_device()
+    def __init__(self, target, device, os):
+        self.device = device
         self._script_path = Path.joinpath(Path().absolute(), '../_agent.js') 
         with open(self._script_path) as src_f:
             self._script_src = src_f.read()
-        session = frida.attach(process)  # `process` is str or int depending on whether it's a name or pid
+        session = frida.attach(target)  # `target` is str or int depending on whether it's a name or pid
         self._script = session.create_script(self._script_src)
         self._script.on('message', Agent.on_message)
         self._script.load()
-        self._script.exports.set_up('macos')
+        self._script.exports.set_up(os)
     
 
     @staticmethod
