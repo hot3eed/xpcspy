@@ -8,10 +8,21 @@ from utils.agent import Agent
 
 
 @click.command()
-@click.argument('target')
+@click.argument('target', required=False)
 @click.option('-U', '--usb', 'use_usb', is_flag=True)
-def main(target, use_usb):
+@click.option('-p', '--attach-pid', 'pid')
+def main(target, use_usb, pid):
     """The main XPC-intercepting command"""
+    if target:
+        pass
+    elif pid:
+        target = int(pid)
+    else:
+        ctx = click.get_current_context()
+        click.secho(ctx.get_help())
+        ctx.exit()
+        sys.exit()
+
     os = None
     device = None
     if use_usb:

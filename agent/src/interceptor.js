@@ -1,9 +1,11 @@
 /**
  * TODO:
  * 	- (DONE) Synchronize messages between Frida script and server.
- * 	- Add different non-exported function pointers for different OS's.
+ * 	- (DONE) Add different non-exported function pointers for different OS's.
+ *  - (DONE) Add attaching to PID.
  * 	- Add incoming and outgoing messages filter.
  * 	- Add XPC event handler backtrace viewer.
+ *  - Add nice logging messages.
 */
 
 
