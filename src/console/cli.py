@@ -5,13 +5,16 @@ import click
 from frida import get_local_device, get_usb_device, InvalidArgumentError
 
 from utils.agent import Agent
+from . import logger
+from lib.types import Filter
 
 
 @click.command()
 @click.argument('target', required=False)
 @click.option('-U', '--usb', 'use_usb', is_flag=True)
 @click.option('-p', '--attach-pid', 'pid')
-def main(target, use_usb, pid):
+@click.option('-f', '--filter-by', 'filter')
+def main(target, use_usb, pid, filter):
     """The main XPC-intercepting command"""
     if target:
         pass
@@ -30,7 +33,7 @@ def main(target, use_usb, pid):
         try:
             device = get_usb_device()
         except InvalidArgumentError:
-            click.secho("USB device not found", fg='red')
+            logger.exit_with_error(f"USB device not found")
             sys.exit()
     else:
         pf = platform()
@@ -38,8 +41,15 @@ def main(target, use_usb, pid):
             os = 'macos'
             device = get_local_device()
         else:
-            click.secho(f"Unsupported platform: {pf}", fg='red')
+            logger.exit_with_error(f"Unsupported platform: {pf}")
             sys.exit()
 
-    Agent(target, device, os) 
+    if filter:
+        filter = Filter.from_str(filter)
+        if filter == None:
+            logger.exit_with_error(f"Invalid filter string")
+    else:
+        filter = Filter.default()
+
+    Agent(target, device, os, filter) 
     sys.stdin.read()

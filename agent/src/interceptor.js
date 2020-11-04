@@ -3,8 +3,13 @@
  * 	- (DONE) Synchronize messages between Frida script and server.
  * 	- (DONE) Add different non-exported function pointers for different OS's.
  *  - (DONE) Add attaching to PID.
- * 	- Add incoming and outgoing messages filter.
+ * 	- (DONE) Add incoming and outgoing messages filter.
+ * 	- (DONE) Add service filter by name.
+ * 	- Handle peer connection. (They have no name)
+ * 	- Add service filter by PID.
  * 	- Add XPC event handler backtrace viewer.
+ * 	- Add formatting.
+ *  - Add data serializers.
  *  - Add nice logging messages.
 */
 

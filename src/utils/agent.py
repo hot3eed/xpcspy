@@ -4,18 +4,14 @@ from collections import OrderedDict
 import frida
 import click
 
+from lib.types import Event
+
 
 _pending_events = OrderedDict()  # A map of stacks, each stack holding events for that particular timestamp
 
 
-class Event:
-    def __init__(self, symbol):
-        self.symbol = symbol
-        self.data = None
-
-
 class Agent:
-    def __init__(self, target, device, os):
+    def __init__(self, target, device, os, filter):
         self.device = device
         self._script_path = Path.joinpath(Path().absolute(), '../_agent.js') 
         with open(self._script_path) as src_f:
@@ -23,8 +19,8 @@ class Agent:
         session = frida.attach(target)  # `target` is str or int depending on whether it's a name or pid
         self._script = session.create_script(self._script_src)
         self._script.on('message', Agent.on_message)
-        self._script.load()
-        self._script.exports.set_up(os)
+        self._script.load() 
+        self._script.exports.set_up(os, filter)
     
 
     @staticmethod
@@ -50,8 +46,7 @@ class Agent:
 
     @staticmethod
     def flush_pending_events():
-        """Flush pending events that are "ready", or have received both its symbol and data"""
-
+        """Flush pending events that are ready, i.e. have received both its symbol and data"""
         for ts, events_stack in list(_pending_events.items()):
             while len(events_stack) > 0:
                 last_event = events_stack[-1]  # Peek
