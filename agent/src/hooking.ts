@@ -4,7 +4,7 @@ import { symbols as macosSymbols } from './macos/symbols';
 import { SymbolicatedPointer, FilterType } from './lib/types';
 import { IFilter } from './lib/interfaces';
 import { wildcardMatch } from './lib/helpers';
-import { xpcConnectionGetName } from './lib/libXPC';
+import { xpcConnectionGetName } from './lib/systemfunctions';
 import { formatConnectionDescription } from './lib/formatter';
 
 
