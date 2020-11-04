@@ -8,9 +8,10 @@
  * 	- Handle peer connection. (They have no name)
  * 	- Add service filter by PID.
  * 	- Add XPC event handler backtrace viewer.
- * 	- Add formatting.
+ * 	- (DONE) Add formatting.
  *  - Add data serializers.
  *  - Add nice logging messages.
+ *  - Add option to output to file.
 */
 
 

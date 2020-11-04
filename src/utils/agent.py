@@ -53,6 +53,8 @@ class Agent:
                 if last_event.data == None:
                     return
                 #print(f"Pop {ts}")
-                print(last_event.symbol, last_event.data, '\n')
+                print('\n' + '-' * 60)
+                print(f"{last_event.symbol}\n{last_event.data['conn']}\n{last_event.data['message']}")
+                print('-' * 60 + '\n')
                 events_stack.pop()
             del _pending_events[ts]

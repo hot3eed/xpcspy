@@ -5,6 +5,7 @@ import { SymbolicatedPointer, FilterType } from './lib/types';
 import { IFilter } from './lib/interfaces';
 import { wildcardMatch } from './lib/helpers';
 import { xpcConnectionGetName } from './lib/libXPC';
+import { formatConnectionDescription } from './lib/formatter';
 
 
 export function installHooks(os: string, filter: IFilter) {
@@ -53,13 +54,15 @@ const _onEnterHandler = function(symbol: string, args: InvocationArguments, conn
 	});
 	
 	const p_xdict = new NativePointer(args[1]);
+	let connectionDesc = new ObjC.Object(p_connection).debugDescription().toString();
+	connectionDesc = formatConnectionDescription(connectionDesc);
 	
 	send({
 		type: 'agent:trace:data',
 		message: 
 		{
 			timestamp: ts, 
-			data: { conn: new ObjC.Object(p_connection).debugDescription().toString(), message: new ObjC.Object(p_xdict).debugDescription().toString()  } 
+			data: { conn: connectionDesc, message: new ObjC.Object(p_xdict).debugDescription().toString()  } 
 		}
 	});
 }
