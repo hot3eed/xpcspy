@@ -5,7 +5,8 @@ import { SymbolicatedPointer, FilterType } from './lib/types';
 import { IFilter } from './lib/interfaces';
 import { wildcardMatch } from './lib/helpers';
 import { xpcConnectionGetName } from './lib/systemfunctions';
-import { formatConnectionDescription } from './lib/formatter';
+import { formatConnectionDescription } from './lib/formatters';
+import { parseBPlistKeysRecursively } from './lib/parsers';
 
 
 export function installHooks(os: string, filter: IFilter) {
@@ -56,7 +57,9 @@ const _onEnterHandler = function(symbol: string, args: InvocationArguments, conn
 	const p_xdict = new NativePointer(args[1]);
 	let connectionDesc = new ObjC.Object(p_connection).debugDescription().toString();
 	connectionDesc = formatConnectionDescription(connectionDesc);
-	
+
+	parseBPlistKeysRecursively(p_xdict);
+
 	send({
 		type: 'agent:trace:data',
 		message: 
