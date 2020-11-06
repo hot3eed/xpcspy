@@ -25,7 +25,7 @@ class Agent:
 
     @staticmethod
     def on_message(message, data):
-        print(message)
+        #print(message)
         timestamp = message['payload']['message']['timestamp']
 
         if message['payload']['type'] == 'agent:trace:symbol':

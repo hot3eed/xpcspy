@@ -1,36 +1,28 @@
-import { consts } from './consts';
-import { symbols as iosSymbols } from './ios/symbols';
-import { symbols as macosSymbols } from './macos/symbols';
-import { SymbolicatedPointer, FilterType } from './lib/types';
-import { IFilter } from './lib/interfaces';
+import { FilterType } from './lib/types';
+import { IFilter, IFunctionPointer } from './lib/interfaces';
 import { wildcardMatch } from './lib/helpers';
-import { xpcConnectionGetName } from './lib/systemfunctions';
+import { SystemFunctionsManager as SFM } from './lib/systemFunctionsManager';
 import { formatConnectionDescription } from './lib/formatters';
 import { parseBPlistKeysRecursively } from './lib/parsers';
+import { outgoingXPCMessagesFunctionPointer } from './consts';
 
 
 export function installHooks(os: string, filter: IFilter) {
-	const pointers: SymbolicatedPointer[] = [];
+	const pointers: IFunctionPointer[] = [];
 
 	if (filter.type & FilterType.Outgoing) {
-		for (let symbol of consts.publicXPCSymbols) {
-			pointers.push([symbol, Module.getExportByName(null, symbol)]);
-		}
+		pointers.push(...outgoingXPCMessagesFunctionPointer);
 	}
 
 	if (filter.type & FilterType.Incoming) {
-		if (os == 'ios') {
-			pointers.push(iosSymbols.getXPCReceivingPointer());
-		} else if (os == 'macos') {
-			pointers.push(macosSymbols.getXPCReceivingPointer());
-		}
+		pointers.push(SFM.sharedInstance().xpcConnectionCallEventHandler);
 	}
 	
 	for (let pointer of pointers) {
-		Interceptor.attach(pointer[1], 
+		Interceptor.attach(pointer.ptr, 
 			{ 
 				onEnter: function(this: InvocationContext, args: InvocationArguments) {
-					_onEnterHandler(pointer[0], args, filter.connectionNamePattern);
+					_onEnterHandler(pointer.name, args, filter.connectionNamePattern);
 				} 
 			});
 	}
@@ -38,7 +30,7 @@ export function installHooks(os: string, filter: IFilter) {
 
 const _onEnterHandler = function(symbol: string, args: InvocationArguments, connectionNamePattern: string): void {
 	const p_connection = new NativePointer(args[0]);
-	const connectionName = (<NativePointer>xpcConnectionGetName(p_connection)).readCString();
+	const connectionName = (<NativePointer>SFM.sharedInstance().xpcConnectionGetName.func(p_connection)).readCString();
 	if (connectionNamePattern != '*' && !wildcardMatch(connectionName, connectionNamePattern)) {
 		return;
 	}
@@ -58,7 +50,7 @@ const _onEnterHandler = function(symbol: string, args: InvocationArguments, conn
 	let connectionDesc = new ObjC.Object(p_connection).debugDescription().toString();
 	connectionDesc = formatConnectionDescription(connectionDesc);
 
-	parseBPlistKeysRecursively(p_xdict);
+//	parseBPlistKeysRecursively(p_xdict);
 
 	send({
 		type: 'agent:trace:data',

@@ -10,3 +10,12 @@ export interface IParsingResult {
     dataType: 'bplist00' | 'bplist15' | 'bplist16',
     data: string
 }
+
+/**
+ * Use this instead of Frida's (naturally) expensive DebugSymbol lookup.
+ */
+export interface IFunctionPointer {
+    name: string,
+    ptr: NativePointer,
+    func: NativeFunction
+}
