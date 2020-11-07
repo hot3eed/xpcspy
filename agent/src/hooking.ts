@@ -1,9 +1,10 @@
 import { FilterType } from './lib/types';
 import { IFilter, IFunctionPointer } from './lib/interfaces';
-import { wildcardMatch } from './lib/helpers';
-import { SystemFunctionsManager as SFM } from './lib/systemFunctionsManager';
+import { objcObjectDebugDesc, wildcardMatch } from './lib/helpers';
+import { xpcConnectionGetName,
+		xpcConnectionCallEventHandler,
+		} from './lib/systemFunctions';
 import { formatConnectionDescription } from './lib/formatters';
-import { parseBPlistKeysRecursively } from './lib/parsers';
 import { outgoingXPCMessagesFunctionPointer } from './consts';
 
 
@@ -15,7 +16,7 @@ export function installHooks(os: string, filter: IFilter) {
 	}
 
 	if (filter.type & FilterType.Incoming) {
-		pointers.push(SFM.sharedInstance().xpcConnectionCallEventHandler);
+		pointers.push(xpcConnectionCallEventHandler);
 	}
 	
 	for (let pointer of pointers) {
@@ -30,7 +31,7 @@ export function installHooks(os: string, filter: IFilter) {
 
 const _onEnterHandler = function(symbol: string, args: InvocationArguments, connectionNamePattern: string): void {
 	const p_connection = new NativePointer(args[0]);
-	const connectionName = (<NativePointer>SFM.sharedInstance().xpcConnectionGetName.func(p_connection)).readCString();
+	const connectionName = (<NativePointer>xpcConnectionGetName.call(p_connection)).readCString();
 	if (connectionNamePattern != '*' && !wildcardMatch(connectionName, connectionNamePattern)) {
 		return;
 	}
@@ -46,18 +47,17 @@ const _onEnterHandler = function(symbol: string, args: InvocationArguments, conn
 		message: {timestamp: ts, symbol: symbol}
 	});
 	
-	const p_xdict = new NativePointer(args[1]);
-	let connectionDesc = new ObjC.Object(p_connection).debugDescription().toString();
+	const p_message = new NativePointer(args[1]);
+	let connectionDesc = objcObjectDebugDesc((p_connection));
 	connectionDesc = formatConnectionDescription(connectionDesc);
-
-//	parseBPlistKeysRecursively(p_xdict);
+	//console.log(objcObjectDebugDesc(p_message));
 
 	send({
 		type: 'agent:trace:data',
 		message: 
 		{
 			timestamp: ts, 
-			data: { conn: connectionDesc, message: new ObjC.Object(p_xdict).debugDescription().toString()  } 
+			data: { conn: connectionDesc, message: new ObjC.Object(p_message).debugDescription().toString()  } 
 		}
 	});
 }
