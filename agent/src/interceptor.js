@@ -5,13 +5,16 @@
  *  - (DONE) Add attaching to PID.
  * 	- (DONE) Add incoming and outgoing messages filter.
  * 	- (DONE) Add service filter by name.
+ * 	- (DONE) Refactor systemsFunctionsManager module.
+ *  	- Use wrappers instead of having to cast each time?
  * 	- Handle peer connection. (They have no name)
  * 	- Add service filter by PID.
  * 	- Add XPC event handler backtrace viewer.
  * 	- (DONE) Add formatting.
- *  - Add data serializers.
+ *  - (PARTIALLY DONE) Add data serializers.
  *  - Add nice logging messages.
  *  - Add option to output to file.
+ * 
 */
 
 

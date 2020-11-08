@@ -3,12 +3,15 @@ import { IFilter, IFunctionPointer } from './lib/interfaces';
 import { objcObjectDebugDesc, wildcardMatch } from './lib/helpers';
 import { xpcConnectionGetName,
 		xpcConnectionCallEventHandler,
+		xpcGetType,
 		} from './lib/systemFunctions';
-import { formatConnectionDescription } from './lib/formatters';
+import { formatConnectionDescription,
+		formatMessageDescription } from './lib/formatters';
 import { outgoingXPCMessagesFunctionPointer } from './consts';
+import { parseBPListKeysRecursively } from './lib/parsers';
 
 
-export function installHooks(os: string, filter: IFilter) {
+export function installHooks(os: string, filter: IFilter, shouldParse: boolean) {
 	const pointers: IFunctionPointer[] = [];
 
 	if (filter.type & FilterType.Outgoing) {
@@ -23,13 +26,16 @@ export function installHooks(os: string, filter: IFilter) {
 		Interceptor.attach(pointer.ptr, 
 			{ 
 				onEnter: function(this: InvocationContext, args: InvocationArguments) {
-					_onEnterHandler(pointer.name, args, filter.connectionNamePattern);
+					_onEnterHandler(pointer.name, args, filter.connectionNamePattern, shouldParse);
 				} 
 			});
 	}
 }
 
-const _onEnterHandler = function(symbol: string, args: InvocationArguments, connectionNamePattern: string): void {
+const _onEnterHandler = function(symbol: string, 
+								args: InvocationArguments, 
+								connectionNamePattern: string,
+								shouldParse: boolean): void {
 	const p_connection = new NativePointer(args[0]);
 	const connectionName = (<NativePointer>xpcConnectionGetName.call(p_connection)).readCString();
 	if (connectionNamePattern != '*' && !wildcardMatch(connectionName, connectionNamePattern)) {
@@ -47,17 +53,30 @@ const _onEnterHandler = function(symbol: string, args: InvocationArguments, conn
 		message: {timestamp: ts, symbol: symbol}
 	});
 	
-	const p_message = new NativePointer(args[1]);
 	let connectionDesc = objcObjectDebugDesc((p_connection));
 	connectionDesc = formatConnectionDescription(connectionDesc);
-	//console.log(objcObjectDebugDesc(p_message));
+	
+	const p_message = new NativePointer(args[1]);
+	let messageDesc = objcObjectDebugDesc(p_message);
+
+	if (shouldParse) {
+		const messageType = objcObjectDebugDesc(<NativePointer>xpcGetType.call(p_message));
+		if (messageType == 'OS_xpc_dictionary') {
+			const parsingResult = parseBPListKeysRecursively(p_message);
+			if (parsingResult.length > 0) {
+				messageDesc = formatMessageDescription(messageDesc, parsingResult);
+			}
+		} else {
+			console.log("Non OS_xpc_dictionary type: " + messageType);
+		}
+	}
 
 	send({
 		type: 'agent:trace:data',
 		message: 
 		{
 			timestamp: ts, 
-			data: { conn: connectionDesc, message: new ObjC.Object(p_message).debugDescription().toString()  } 
+			data: { conn: connectionDesc, message: messageDesc } 
 		}
 	});
 }

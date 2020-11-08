@@ -42,7 +42,7 @@ export const xpcDataGetBytesPtr: IFunctionPointer = {
 export const xpcDataGetLength: IFunctionPointer = {
     name: 'xpc_data_get_length',
     ptr: p_xpc_data_get_length,
-    call: new NativeFunction(p_xpc_data_get_length, 'pointer', ['int'])
+    call: new NativeFunction(p_xpc_data_get_length, 'uint32', ['pointer'])
 };
 
 export const xpcConnectionSendMessage: IFunctionPointer = {

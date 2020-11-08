@@ -11,7 +11,7 @@ _pending_events = OrderedDict()  # A map of stacks, each stack holding events fo
 
 
 class Agent:
-    def __init__(self, target, device, os, filter):
+    def __init__(self, target, device, os, filter, should_parse):
         self.device = device
         self._script_path = Path.joinpath(Path().absolute(), '../_agent.js') 
         with open(self._script_path) as src_f:
@@ -20,12 +20,13 @@ class Agent:
         self._script = session.create_script(self._script_src)
         self._script.on('message', Agent.on_message)
         self._script.load() 
-        self._script.exports.set_up(os, filter)
+        self._script.exports.set_up(os, filter, should_parse)
     
 
     @staticmethod
     def on_message(message, data):
-        #print(message)
+        if message['type'] == 'error':
+            click.secho(message['stack'], fg='red');
         timestamp = message['payload']['message']['timestamp']
 
         if message['payload']['type'] == 'agent:trace:symbol':

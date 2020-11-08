@@ -6,8 +6,8 @@ export interface IFilter {
 }
 
 export interface IParsingResult {
-    key: string,
-    dataType: 'bplist00' | 'bplist15' | 'bplist16',
+    key: string | null,
+    format: 'bplist00' | 'bplist15' | 'bplist16',
     data: string
 }
 
@@ -17,5 +17,5 @@ export interface IParsingResult {
 export interface IFunctionPointer {
     name: string,
     ptr: NativePointer,
-    func: NativeFunction
+    call: NativeFunction
 }

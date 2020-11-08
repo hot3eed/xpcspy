@@ -14,7 +14,8 @@ from lib.types import Filter
 @click.option('-U', '--usb', 'use_usb', is_flag=True)
 @click.option('-p', '--attach-pid', 'pid')
 @click.option('-f', '--filter-by', 'filter')
-def main(target, use_usb, pid, filter):
+@click.option('-r', '--parse', 'should_parse', is_flag=True)
+def main(target, use_usb, pid, filter, should_parse):
     """The main XPC-intercepting command"""
     if target:
         pass
@@ -51,5 +52,5 @@ def main(target, use_usb, pid, filter):
     else:
         filter = Filter.default()
 
-    Agent(target, device, os, filter) 
+    Agent(target, device, os, filter, should_parse) 
     sys.stdin.read()
