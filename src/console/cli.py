@@ -11,12 +11,22 @@ from lib.types import Filter
 
 @click.command()
 @click.argument('target', required=False)
-@click.option('-U', '--usb', 'use_usb', is_flag=True)
-@click.option('-p', '--attach-pid', 'pid')
-@click.option('-f', '--filter-by', 'filter')
-@click.option('-r', '--parse', 'should_parse', is_flag=True)
+@click.option('-U', '--usb', 'use_usb', is_flag=True, help="""
+    Use the USB-connected device instead of the local one
+""")
+@click.option('-p', '--attach-pid', 'pid', type=int, help="""
+    Attach using the process' PID
+""")
+@click.option('-f', '--filter-by', 'filter', help="""
+    Filter by message's direction and service name. 'i' denotes incoming and 'o' denotes outgoing. 
+    Service name can include the wildcard character '*'.
+    For exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.
+""")
+@click.option('-r', '--parse', 'should_parse', is_flag=True, help="""
+    Parse XPC dictionary keys that include either `bplist00` or `bplist16` data.
+""")
 def main(target, use_usb, pid, filter, should_parse):
-    """The main XPC-intercepting command"""
+    """Intercept XPC messages and more"""
     if target:
         pass
     elif pid:
