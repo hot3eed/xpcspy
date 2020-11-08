@@ -13,7 +13,7 @@ export function formatMessageDescription(messageDesc: string, parsingResult: IPa
     var s = messageDesc;
     for (let result of parsingResult) {
         s = s.replace(new RegExp(`(${result.key}.*\n)`), 
-                                `$1Parsed ${result.format} data for key ${result.key}: \n${result.data}\n`);
+                                `$1Parsed ${result.format} data for key '${result.key}': \n${result.data}\n`);
     }
 
     return s; 
