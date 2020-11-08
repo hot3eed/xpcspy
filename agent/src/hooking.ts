@@ -66,9 +66,7 @@ const _onEnterHandler = function(symbol: string,
 			if (parsingResult.length > 0) {
 				messageDesc = formatMessageDescription(messageDesc, parsingResult);
 			}
-		} else {
-			console.log("Non OS_xpc_dictionary type: " + messageType);
-		}
+		} // Parse `OS_xpc_data` as well?
 	}
 
 	send({
