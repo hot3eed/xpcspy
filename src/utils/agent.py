@@ -5,6 +5,7 @@ import frida
 import click
 
 from lib.types import Event
+from console import logger
 
 
 _pending_events = OrderedDict()  # A map of stacks, each stack holding events for that particular timestamp
@@ -21,7 +22,10 @@ class Agent:
         self._script_path = Path.joinpath(Path().absolute(), '../_agent.js') 
         with open(self._script_path) as src_f:
             self._script_src = src_f.read()
-        session = frida.attach(target)  # `target` is str or int depending on whether it's a name or pid
+        try:
+            session = frida.attach(target)  # `target` is str or int depending on whether it's a name or pid
+        except frida.PermissionDeniedError:
+            logger.exit_with_error(f"You don't have enough permissions to attach to {target}, try sudo?")
         click.secho(f"[!] Successfully attached to {target}", fg='green')
         self._script = session.create_script(self._script_src)
         self._script.on('message', Agent.on_message)
