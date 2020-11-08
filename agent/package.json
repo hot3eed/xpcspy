@@ -1,5 +1,5 @@
 {
-  "name": "xpci",
+  "name": "xpc-spy",
   "version": "0.0.0",
   "description": "XPC message interceptor.",
   "main": "src/index.ts",
@@ -8,8 +8,15 @@
     "build": "frida-compile src/index.ts -o ../_agent.js",
     "watch": "frida-compile src/index.ts -o ../_agent.js -w"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hot3eed/xpc-spy"
+  },
+  "bugs": {
+    "url": "https://github.com/hot3eed/xps-spy/issues"
+  },
   "author": "hot3eed",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {},
   "devDependencies": {
     "@types/frida-gum": "^16.2.0",
