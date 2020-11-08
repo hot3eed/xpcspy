@@ -4,6 +4,7 @@
 * Bidirectional XPC messages interception.
 * iOS and macOS support.
 * `bplist00`, and the infamous `bplist15` [deserialization].
+* Filter by message direction (incoming or outgoing) and service name.
 * More to come?
 
 ## TODO:
