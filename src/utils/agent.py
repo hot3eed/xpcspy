@@ -17,24 +17,25 @@ class Agent:
 
         @param target If `str`, it'll be interpreted as the process' name, if `int` it'll be the PID.
         """
-        print(f"Agent({target}, {device}, {os}, {filter}, {should_parse})")
         self.device = device
         self._script_path = Path.joinpath(Path().absolute(), '../_agent.js') 
         with open(self._script_path) as src_f:
             self._script_src = src_f.read()
-        click.secho(f"[*] Attaching to {target}...", fg='green')
         session = frida.attach(target)  # `target` is str or int depending on whether it's a name or pid
+        click.secho(f"[!] Successfully attached to {target}", fg='green')
         self._script = session.create_script(self._script_src)
         self._script.on('message', Agent.on_message)
+        click.secho(f"[*] Loading script...", fg='green')
         self._script.load() 
+        click.secho(f"[!] Script loaded successfully", fg='green')
         self._script.exports.set_up(os, filter, should_parse)
+        click.secho(f"[!] Hooks installed successfully and functions are being intercepted now", fg='green')
     
 
     @staticmethod
     def on_message(message, data):
         if message['type'] == 'error':
             click.secho(message['stack'], fg='red');
-        print(message)
         timestamp = message['payload']['message']['timestamp']
 
         if message['payload']['type'] == 'agent:trace:symbol':
