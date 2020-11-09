@@ -23,6 +23,9 @@ setup(
     version=__version__,
     packages=find_packages(),
     install_requires=requirements,
+    include_data={
+        '': [os.path.join(here, 'xpcspy/_agent.js')]
+        },
     entry_points={
         'console_scripts': [
                 'xpcspy=xpcspy.console.cli:main'
