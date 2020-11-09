@@ -10,6 +10,13 @@ import { formatConnectionDescription,
 import { outgoingXPCMessagesFunctionPointer } from './consts';
 import { parseBPListKeysRecursively } from './lib/parsers';
 
+/**
+ * TODO:
+ *  - Add `bplist16` serialization.
+ *  - Add option to fetch the process' name in the connection description.
+ * 	- Handle peer connections more explicitly; they have no name.
+ * 	- Add option to filter services by pid.
+ */
 
 export function installHooks(os: string, filter: IFilter, shouldParse: boolean) {
 	const pointers: IFunctionPointer[] = [];
