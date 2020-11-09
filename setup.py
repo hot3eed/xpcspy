@@ -19,7 +19,7 @@ setup(
     author='hot3eed',
     author_email='hot3eed@gmail.com',
     url='https://github.com/hot3eed/xpcspy',
-    keyword=['macos', 'ios', 'xnu', 'xpc', 'frida'],
+    keywords=['macos', 'ios', 'xnu', 'xpc', 'frida'],
     version=__version__,
     packages=find_packages(),
     install_requires=requirements,
