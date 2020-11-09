@@ -3,7 +3,7 @@ DIST_DIR := dist
 default: clean compile-agent sdist
 
 clean:
-	$(RM) $(DIST_DIR)/*
+	rm -rf $(DIST_DIR)/*
 
 compile-agent:
 	cd agent && npm run build
