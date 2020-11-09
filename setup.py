@@ -4,9 +4,9 @@ import os
 from xpcspy.__init__ import __version__
 
 
-here = os.path.abspath(os.path.dirname(__file__))
+cwd = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(here, 'requirements.txt'), 'r') as f:
+with open(os.path.join(cwd, 'requirements.txt'), 'r') as f:
     requirements = f.readlines()
 
 setup(
@@ -20,9 +20,6 @@ setup(
     version=__version__,
     packages=find_packages(),
     install_requires=requirements,
-    include_data={
-        '': [os.path.join(here, 'xpcspy/_agent.js')]
-        },
     entry_points={
         'console_scripts': [
                 'xpcspy=xpcspy.console.cli:main'

@@ -1,5 +1,6 @@
-from pathlib import Path
+from os import path
 from collections import OrderedDict
+
 
 import frida
 import click
@@ -19,7 +20,7 @@ class Agent:
         @param target If `str`, it'll be interpreted as the process' name, if `int` it'll be the PID.
         """
         self.device = device
-        self._script_path = Path.joinpath(Path().absolute(), '_agent.js') 
+        self._script_path = path.join(path.abspath(path.dirname(__file__)), '../../_agent.js')
         with open(self._script_path) as src_f:
             self._script_src = src_f.read()
         try:
