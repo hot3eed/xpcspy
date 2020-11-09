@@ -9,9 +9,6 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'requirements.txt'), 'r') as f:
     requirements = f.readlines()
 
-print("hey hey")
-print(f"REQ {requirements}")
-
 setup(
     name='xpcspy',
     description="XPC message interception and more",
