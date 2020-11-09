@@ -62,9 +62,7 @@ function parseBPList(bytesPtr: NativePointer, length: number): IParsingResult {
        }
    } else if (bplistFmt == 'bplist00') {
        return parseBPlist00(bytesPtr, length);
-   } else {
-       throw Error(`Unimplemented bplist format ${bplistFmt}`);
-   }
+   } // Add bplist16 serialization
 }
 
 
