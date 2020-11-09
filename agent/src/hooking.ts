@@ -61,7 +61,7 @@ const _onEnterHandler = function(symbol: string,
 	});
 	
 	let connectionDesc = objcObjectDebugDesc((p_connection));
-	connectionDesc = formatConnectionDescription(connectionDesc);
+	// connectionDesc = formatConnectionDescription(connectionDesc);  // This is buggy, fix it later
 	
 	const p_message = new NativePointer(args[1]);
 	let messageDesc = objcObjectDebugDesc(p_message);
