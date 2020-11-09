@@ -4,9 +4,9 @@ from platform import platform
 import click
 from frida import get_local_device, get_usb_device, InvalidArgumentError
 
-from utils.agent import Agent
+from ..utils.agent import Agent
 from . import logger
-from lib.types import Filter
+from ..lib.types import Filter
 
 
 @click.command()
