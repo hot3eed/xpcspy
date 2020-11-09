@@ -33,6 +33,10 @@ Options:
 ![screenshot_1.png](assets/screenshot_1.png)
 
 
+## Installation
+`pip3 install xpcspy`
+
+
 ## TODO:
 * Add support for `bplist16`.
 * Deserialize data within the parsed `bplist`s recursively.
