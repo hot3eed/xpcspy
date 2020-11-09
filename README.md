@@ -47,5 +47,8 @@ Options:
     * I'm not; XPoCe doesn't intercept incoming messages, and doesn't support `bplist00` or `bplist15`. 
     `
 
+## License
+[Apache License 2.0](license)
+
 [wheel]: http://newosxbook.com/tools/XPoCe2.html
 [deserialization]: http://newosxbook.com/bonus/bplist.pdf
