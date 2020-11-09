@@ -48,7 +48,7 @@ Options:
     `
 
 ## License
-[Apache License 2.0](license)
+[Apache License 2.0](LICENSE)
 
 [wheel]: http://newosxbook.com/tools/XPoCe2.html
 [deserialization]: http://newosxbook.com/bonus/bplist.pdf
