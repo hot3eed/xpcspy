@@ -13,3 +13,6 @@ sdist:
 
 testupload:
 	twine upload dist/* -r testpypi
+
+upload:
+	twine upload dist/*
