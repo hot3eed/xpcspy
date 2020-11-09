@@ -3,3 +3,5 @@
 .DS_Store
 _agent.js
 */node_modules
+xpcspy.egg-info/
+dist/

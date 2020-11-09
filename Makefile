@@ -5,8 +5,11 @@ default: clean compile-agent sdist
 clean:
 	$(RM) $(DIST_DIR)/*
 
+compile-agent:
+	cd agent && npm run build
+
 sdist:
 	python3 setup.py sdist
 
 testupload:
-	twin upload dist/* -r testpypi
+	twine upload dist/* -r testpypi
