@@ -18,7 +18,7 @@ from ..lib.types import Filter
     Attach using the process' PID
 """)
 @click.option('-f', '--filter-by', 'filter', help="""
-    Filter by message's direction and service name. 'i' denotes incoming and 'o' denotes outgoing. 
+    Filter by message direction and service name. 'i' denotes incoming and 'o' denotes outgoing. 
     Service name can include the wildcard character '*'.
     For exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.
 """)
