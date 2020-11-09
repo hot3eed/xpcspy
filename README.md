@@ -1,4 +1,4 @@
-# xpc-spy - Bidirectional XPC message interception and more
+# xpcspy - Bidirectional XPC message interception and more
 
 ## Features:
 * Bidirectional XPC messages interception.
