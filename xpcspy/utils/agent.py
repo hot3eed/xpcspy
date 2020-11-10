@@ -24,7 +24,7 @@ class Agent:
         with open(self._script_path) as src_f:
             self._script_src = src_f.read()
         try:
-            session = frida.attach(target)  # `target` is str or int depending on whether it's a name or pid
+            session = self.device.attach(target)  # `target` is str or int depending on whether it's a name or pid
         except frida.PermissionDeniedError:
             logger.exit_with_error(f"You don't have enough permissions to attach to {target}, try sudo?")
         click.secho(f"[!] Successfully attached to {target}", fg='green')
