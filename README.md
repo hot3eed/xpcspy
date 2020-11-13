@@ -26,7 +26,7 @@ Options:
                             'o:com.apple.apsd' or just 'o'/'i'.
 
   -r, --parse               Parse XPC dictionary keys that include either
-                            `bplist00` or `bplist16` data.
+                            `bplist00` or `bplist15` data.
 
   --help                    Show this message and exit.
 ```
