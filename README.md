@@ -22,7 +22,7 @@ Options:
   -f, --filter-by TEXT      Filter by message direction and service name.
                             'i' denotes incoming and 'o' denotes outgoing.
                             Service name can include the wildcard character
-                            '*'. For exmaple 'i:com.apple.*',
+                            '*'. For example 'i:com.apple.*',
                             'o:com.apple.apsd' or just 'o'/'i'.
 
   -r, --parse               Parse XPC dictionary keys that include either
