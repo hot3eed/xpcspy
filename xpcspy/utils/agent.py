@@ -1,44 +1,38 @@
 from os import path
 from collections import OrderedDict
 
-
 import frida
-import click
 
 from ..lib.types import Event
-from ..console import logger
 
 
 _pending_events = OrderedDict()  # A map of stacks, each stack holding events for that particular timestamp
 
 
 class Agent:
-    def __init__(self, target, device, os, filter, should_parse):
+    def __init__(self, filter, should_parse, session, reactor):
         """
         Initialize the Frida agent
-
-        @param target If `str`, it'll be interpreted as the process' name, if `int` it'll be the PID.
         """
-        self.device = device
+        self._filter = filter
+        self._should_parse = should_parse
         self._script_path = path.join(path.abspath(path.dirname(__file__)), '../../_agent.js')
         with open(self._script_path) as src_f:
-            self._script_src = src_f.read()
-        try:
-            session = self.device.attach(target)  # `target` is str or int depending on whether it's a name or pid
-        except frida.PermissionDeniedError:
-            logger.exit_with_error(f"You don't have enough permissions to attach to {target}, try sudo?")
-        click.secho(f"[!] Successfully attached to {target}", fg='green')
-        self._script = session.create_script(self._script_src)
-        self._script.on('message', Agent.on_message)
-        click.secho(f"[*] Loading script...", fg='green')
-        self._script.load() 
-        click.secho(f"[!] Script loaded successfully", fg='green')
-        self._script.exports.set_up(os, filter, should_parse)
-        click.secho(f"[!] Hooks installed successfully and functions are being intercepted now", fg='green')
-    
+            script_src = src_f.read()
+        self._script = session.create_script(script_src)
+        self._reactor = reactor
+        self._agent = None
 
-    @staticmethod
-    def on_message(message, data):
+    def start_hooking(self, ui):
+        def on_message(message, data):
+            self._reactor.schedule(lambda: self._on_message(message, data, ui))
+
+        self._script.on('message', on_message)
+        self._script.load()
+        self._agent = self._script.exports
+        self._agent.install_hooks(self._filter, self._should_parse)
+
+    def _on_message(self, message, data, ui):
         if message['type'] == 'error':
             click.secho(message['stack'], fg='red');
         timestamp = message['payload']['message']['timestamp']
