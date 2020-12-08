@@ -1,5 +1,5 @@
 import { IParsingResult } from '../lib/interfaces';
-import { isBPListData, objcObjectDebugDesc } from '../lib/helpers';
+import { isSupportedBPListData, objcObjectDebugDesc } from '../lib/helpers';
 import { xpcGetType, 
         xpcDictionaryApply,
         __CFBinaryPlistCreate15, 
@@ -24,7 +24,7 @@ export function parseBPListKeysRecursively(xpcDict: NativePointer): IParsingResu
                 break;
             case 'OS_xpc_data':
                 const bytesPtr = <NativePointer>xpcDataGetBytesPtr.call(value);
-                if (isBPListData(bytesPtr)) {
+                if (isSupportedBPListData(bytesPtr)) {
                     const length = <number>xpcDataGetLength.call(value);
                     const r = parseBPList(bytesPtr, length);
                     r.key = key.readCString();

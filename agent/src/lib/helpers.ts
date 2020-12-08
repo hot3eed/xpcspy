@@ -13,6 +13,7 @@ export function objcObjectDebugDesc(ptr: NativePointer) {
     return (new ObjC.Object(ptr)).toString();
 }
 
-export function isBPListData(bytesPtr: NativePointer): boolean {
-    return bytesPtr.readCString(6) == 'bplist';
+export function isSupportedBPListData(bytesPtr: NativePointer): boolean {
+    const magic = bytesPtr.readCString(8);
+    return magic == 'bplist00' || magic == 'bplist15'; 
 }
