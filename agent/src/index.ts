@@ -1,7 +1,7 @@
-import { setUp } from "./rpc/setup";
+import { installHooks } from "./hooking";
 import { IFilter } from './lib/interfaces';
 
 
 rpc.exports = {
-	setUp: (os: string, filter: IFilter, shouldParse: boolean): void => setUp(os, filter, shouldParse),
+	installHooks: (filter: IFilter, shouldParse: boolean): void => installHooks(filter, shouldParse),
 };

@@ -18,7 +18,7 @@ import { parseBPListKeysRecursively } from './lib/parsers';
  * 	- Add option to filter services by pid.
  */
 
-export function installHooks(os: string, filter: IFilter, shouldParse: boolean) {
+export function installHooks(filter: IFilter, shouldParse: boolean) {
 	const pointers: IFunctionPointer[] = [];
 
 	if (filter.type & FilterType.Outgoing) {
