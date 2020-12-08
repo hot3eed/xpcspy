@@ -31,8 +31,6 @@ class XPCSpyApplication(ConsoleApplication, UI):
         else:
             self._filter = Filter.default()
         self._should_parse = options.parse or False
-        self._output = None
-        self._output_path = options.output
 
     def _start(self):
         agent = Agent(self._filter, self._should_parse, self._session, self._reactor)
