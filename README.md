@@ -10,25 +10,39 @@
 
 ## Showcase
 ```
-Usage: xpcspy [OPTIONS] [TARGET]
-
-  Intercept XPC messages and more
+Usage: xpcspy [options] target
 
 Options:
-  -U, --usb                 Use the USB-connected device instead of the local
-                            one
-
-  -p, --attach-pid INTEGER  Attach using the process' PID
-  -f, --filter-by TEXT      Filter by message direction and service name.
-                            'i' denotes incoming and 'o' denotes outgoing.
-                            Service name can include the wildcard character
-                            '*'. For example 'i:com.apple.*',
-                            'o:com.apple.apsd' or just 'o'/'i'.
-
-  -r, --parse               Parse XPC dictionary keys that include either
-                            `bplist00` or `bplist15` data.
-
-  --help                    Show this message and exit.
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -D ID, --device=ID    connect to device with the given ID
+  -U, --usb             connect to USB device
+  -R, --remote          connect to remote frida-server
+  -H HOST, --host=HOST  connect to remote frida-server on HOST
+  -f FILE, --file=FILE  spawn FILE
+  -F, --attach-frontmost
+                        attach to frontmost application
+  -n NAME, --attach-name=NAME
+                        attach to NAME
+  -p PID, --attach-pid=PID
+                        attach to PID
+  --stdio=inherit|pipe  stdio behavior when spawning (defaults to “inherit”)
+  --aux=option          set aux option when spawning, such as “uid=(int)42”
+                        (supported types are: string, bool, int)
+  --runtime=qjs|v8      script runtime to use
+  --debug               enable the Node.js compatible script debugger
+  --squelch-crash       if enabled, will not dump crash report to console
+  -O FILE, --options-file=FILE
+                        text file containing additional command line options
+  -t FILTER, --filter=FILTER
+                        Filter by message direction and service name. 'i'
+                        denotes incoming and 'o' denotes outgoing. Service
+                        name can include the wildcard character '*'. For
+                        exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.
+  -r, --parse           Parse XPC dictionary keys that include either
+                        `bplist00` or `bplist16` data.
+  -o OUTPUT, --output=OUTPUT
+                        dump output to file OUTPUT
 ```
 ![screenshot_1.png](assets/screenshot_1.png)
 
