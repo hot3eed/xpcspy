@@ -6,18 +6,13 @@ from ..lib.types import Filter
 
 
 class XPCSpyApplication(ConsoleApplication, UI):
-    def __init__(self):
-        super(XPCSpyApplication, self).__init__()
-        self._filter = Filter.default()
-        self._should_parse = False
-
     def _usage(self):
         return "usage: %prog [options] target"
 
     def _needs_target(self):
         return True
 
-    def _add_options(self, parser):  
+    def _add_options(self, parser):
         parser.add_option('-t', '--filter', 
                         help="Filter by message direction and service name. 'i' denotes incoming and 'o' denotes outgoing. Service name can include the wildcard character '*'. For exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.",
                         metavar='FILTER', type='string')
@@ -27,8 +22,15 @@ class XPCSpyApplication(ConsoleApplication, UI):
         parser.add_option('-o', '--output', help="dump output to file OUTPUT", metavar='OUTPUT', type='string')
 
     def _initialize(self, parser, options, args):
-        self._filter = options.filter
-        self._should_parse = options.parse
+        if options.filter:
+            filter = Filter.from_str(options.filter)
+            if filter is None:
+                self._update_status("Error: invalid filter string")
+                self._exit(1)
+            self._filter = filter
+        else:
+            self._filter = Filter.default()
+        self._should_parse = options.parse or False
         self._output = None
         self._output_path = options.output
 

@@ -12,15 +12,17 @@ import { parseBPListKeysRecursively } from './lib/parsers';
 
 /**
  * TODO:
+ *  - Use a class for the agent, makes more sense to store `shouldParse` and so on there.
  *  - Add `bplist16` serialization.
  *  - Add option to fetch the process' name in the connection description.
  * 	- Handle peer connections more explicitly; they have no name.
  * 	- Add option to filter services by pid.
  */
 
+
 export function installHooks(filter: IFilter, shouldParse: boolean) {
 	const pointers: IFunctionPointer[] = [];
-
+	
 	if (filter.type & FilterType.Outgoing) {
 		pointers.push(...outgoingXPCMessagesFunctionPointer);
 	}
@@ -37,6 +39,10 @@ export function installHooks(filter: IFilter, shouldParse: boolean) {
 				} 
 			});
 	}
+
+	send({
+		'type': 'agent:hooks_installed'
+	});
 }
 
 const _onEnterHandler = function(symbol: string, 

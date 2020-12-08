@@ -6,14 +6,12 @@ import frida
 from ..lib.types import Event
 
 
-_pending_events = OrderedDict()  # A map of stacks, each stack holding events for that particular timestamp
-
-
 class Agent:
     def __init__(self, filter, should_parse, session, reactor):
         """
         Initialize the Frida agent
         """
+        self._pending_events = OrderedDict() # A map of stacks, each stack holding events for that particular timestamp
         self._filter = filter
         self._should_parse = should_parse
         self._script_path = path.join(path.abspath(path.dirname(__file__)), '../../_agent.js')
@@ -29,34 +27,38 @@ class Agent:
 
         self._script.on('message', on_message)
         self._script.load()
+        ui._update_status("Installing hooks...")
         self._agent = self._script.exports
         self._agent.install_hooks(self._filter, self._should_parse)
 
     def _on_message(self, message, data, ui):
         if message['type'] == 'error':
             click.secho(message['stack'], fg='red');
-        timestamp = message['payload']['message']['timestamp']
+        mtype = message['payload']['type']
 
-        if message['payload']['type'] == 'agent:trace:symbol':
+        if mtype == 'agent:hooks_installed':
+            ui._update_status("Hooks installed, intercepting messages...")
+        elif mtype == 'agent:trace:symbol':
             symbol = message['payload']['message']['symbol']
-            if timestamp in _pending_events:
-                _pending_events[timestamp].append(Event(symbol)) 
+            timestamp = message['payload']['message']['timestamp']
+            if timestamp in self._pending_events:
+                self._pending_events[timestamp].append(Event(symbol)) 
                 #print(f"Update {timestamp}")
             else:
-                _pending_events.update({ timestamp: [Event(symbol)] })
+                self._pending_events.update({ timestamp: [Event(symbol)] })
                 #print(f"Add {timestamp}")
-
-        elif message['payload']['type'] == 'agent:trace:data':
+        elif mtype == 'agent:trace:data':
+            timestamp = message['payload']['message']['timestamp']
             data = message['payload']['message']['data']
-            _pending_events[timestamp][-1].data = data
+            self._pending_events[timestamp][-1].data = data
+        else:
+            ui._print(f"Unhandled message {message}")
 
-        Agent.flush_pending_events()
+        self.flush_pending_events()
 
-
-    @staticmethod
-    def flush_pending_events():
+    def flush_pending_events(self):
         """Flush pending events that are ready, i.e. have received both its symbol and data"""
-        for ts, events_stack in list(_pending_events.items()):
+        for ts, events_stack in list(self._pending_events.items()):
             while len(events_stack) > 0:
                 last_event = events_stack[-1]  # Peek
                 if last_event.data == None:
@@ -66,4 +68,4 @@ class Agent:
                 print(f"{last_event.symbol}\n{last_event.data['conn']}\n{last_event.data['message']}")
                 print('-' * 60 + '\n')
                 events_stack.pop()
-            del _pending_events[ts]
+            del self._pending_events[ts]
