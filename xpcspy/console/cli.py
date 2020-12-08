@@ -19,7 +19,7 @@ class XPCSpyApplication(ConsoleApplication, UI):
         parser.add_option('-r', '--parse',
                         help="Parse XPC dictionary keys that include either `bplist00` or `bplist16` data.",
                         metavar='SHOULD_PARSE', action='store_true') 
-        parser.add_option('-o', '--output', help="dump output to file OUTPUT", metavar='OUTPUT', type='string')
+        # parser.add_option('-o', '--output', help="dump output to file OUTPUT", metavar='OUTPUT', type='string')
 
     def _initialize(self, parser, options, args):
         if options.filter:

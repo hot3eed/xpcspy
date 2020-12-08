@@ -41,8 +41,6 @@ Options:
                         exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.
   -r, --parse           Parse XPC dictionary keys that include either
                         `bplist00` or `bplist16` data.
-  -o OUTPUT, --output=OUTPUT
-                        dump output to file OUTPUT
 ```
 ![screenshot_1.png](assets/screenshot_1.png)
 
