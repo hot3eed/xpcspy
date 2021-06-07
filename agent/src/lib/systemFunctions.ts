@@ -14,6 +14,8 @@ const p_xpc_connection_send_notification = Module.getExportByName(libXPCDylib, '
 const p__xpc_Connection_call_event_handler = DebugSymbol.fromName('_xpc_connection_call_event_handler').address;
 const p___CFBinaryPlistCreate15 = DebugSymbol.fromName('__CFBinaryPlistCreate15').address;
 
+const p_xpc_dictionary_get_count = Module.getExportByName(libXPCDylib, 'xpc_dictionary_get_count');
+
 
 export const xpcConnectionGetName: IFunctionPointer = {
     name: 'xpc_connection_get_name',
@@ -74,6 +76,13 @@ export const xpcConnectionCallEventHandler: IFunctionPointer = {
     ptr: p__xpc_Connection_call_event_handler,
     call: new NativeFunction(p__xpc_Connection_call_event_handler, 'void', ['pointer', 'pointer'])
 }
+
+export const xpcDictionaryGetCount: IFunctionPointer = {
+    name: 'xpc_dictionary_get_count',
+    ptr: p_xpc_dictionary_get_count,
+    call: new NativeFunction(p_xpc_dictionary_get_count, 'size_t', ['pointer'])
+}
+
 
 export const __CFBinaryPlistCreate15: IFunctionPointer = {
     name: '__CFBinaryPlistCreate15',
