@@ -4,22 +4,24 @@ from collections import OrderedDict
 import frida
 
 from ..lib.types import Event
-
+import datetime
 
 class Agent:
-    def __init__(self, filter, should_parse, session, reactor):
+    def __init__(self, filter, should_parse, session, reactor, print_timestamp=False):
         """
         Initialize the Frida agent
         """
         self._pending_events = OrderedDict() # A map of stacks, each stack holding events for that particular timestamp
         self._filter = filter
         self._should_parse = should_parse
+        self._print_timestamp = print_timestamp
         self._script_path = path.join(path.abspath(path.dirname(__file__)), '../../_agent.js')
         with open(self._script_path) as src_f:
             script_src = src_f.read()
         self._script = session.create_script(script_src)
         self._reactor = reactor
         self._agent = None
+        
 
     def start_hooking(self, ui):
         def on_message(message, data):
@@ -65,6 +67,9 @@ class Agent:
                     return
                 #print(f"Pop {ts}")
                 print('\n' + '-' * 60)
+                if (self._print_timestamp):
+                    date_time = datetime.datetime.fromtimestamp((ts/1000))
+                    print(f"{date_time}")
                 print(f"{last_event.symbol}\n{last_event.data['conn']}\n{last_event.data['message']}")
                 print('-' * 60 + '\n')
                 events_stack.pop()

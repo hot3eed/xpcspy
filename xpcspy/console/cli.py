@@ -20,6 +20,9 @@ class XPCSpyApplication(ConsoleApplication, UI):
                         help="Parse XPC dictionary keys that include either `bplist00` or `bplist16` data.",
                         metavar='SHOULD_PARSE', action='store_true') 
         # parser.add_option('-o', '--output', help="dump output to file OUTPUT", metavar='OUTPUT', type='string')
+        parser.add_option('-d', '--print-date',
+                        help='Print a current timestamp before every XPC message', 
+                        action='store_true', default=False)
 
     def _initialize(self, parser, options, args):
         if options.filter:
@@ -31,9 +34,10 @@ class XPCSpyApplication(ConsoleApplication, UI):
         else:
             self._filter = Filter.default()
         self._should_parse = options.parse or False
+        self._print_timestamp = options.print_date or False 
 
     def _start(self):
-        agent = Agent(self._filter, self._should_parse, self._session, self._reactor)
+        agent = Agent(self._filter, self._should_parse, self._session, self._reactor, self._print_timestamp)
         agent.start_hooking(self)
 
 
