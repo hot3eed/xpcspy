@@ -17,10 +17,6 @@ export function wildcardMatch(target: string, pattern: string): boolean {
     return exp.test(target);
 }
 
-export function objcObjectDebugDesc_old(ptr: NativePointer) {
-    return (new ObjC.Object(ptr)).toString();
-}
-
 /**
  * Enhanced debug printing. For XPC dicitionaries we print entire byte arrays instead of just the beginning. This enhances the output compared to the standard output by debugPrinting 
  * @param ptr Objective C Pointer 
