@@ -41,6 +41,7 @@ Options:
                         exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.
   -r, --parse           Parse XPC dictionary keys that include either
                         `bplist00` or `bplist16` data.
+  -d, --print-date      Print a current timestamp before every XPC message
 ```
 ![screenshot_1.png](assets/screenshot_1.png)
 
