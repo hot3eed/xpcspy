@@ -25,24 +25,16 @@ export function wildcardMatch(target: string, pattern: string): boolean {
 export function objcObjectDebugDesc(ptr: NativePointer) {
     // We enhance the debug description by actually printing complete data blobs as base64 instead of trimming the data when using the current implementation 
 
-    let objcObject = new ObjC.Object(ptr);
-    let className = objcObject.$className;  
-    let outString = ""
+    const objcObject = new ObjC.Object(ptr);
 
-
-    if (className === "OS_xpc_dictionary") {
-        let entries = xpcDictionaryGetCount.call(objcObject); 
-
+    if (objcObject.$className === "OS_xpc_dictionary") {
+        const entries = xpcDictionaryGetCount.call(objcObject);
         if (entries > 0) {
-            outString += debugDescriptionForXPCDictionary(objcObject, entries); 
-        }else {
-            outString += objcObject.toString(); 
+            return debugDescriptionForXPCDictionary(objcObject, entries);
         }
-    }else {
-        outString += objcObject.toString(); 
     }
 
-    return outString;
+    return objcObject.toString();
 }
 
 export function debugDescriptionForXPCDictionary(xpcDict: ObjC.Object, count) {
@@ -91,23 +83,6 @@ export function debugDescriptionForXPCDictionary(xpcDict: ObjC.Object, count) {
     outString += "\n}"
 
     return outString; 
-}
-
-
-export function objcDebugDescriptionNSData(data: ObjC.Object) {
-    let dataBuffer = data.bytes(); 
-    let length = data.length(); 
-
-    if (!dataBuffer) {
-        return "{length = " + length.valueOf() + " bytes, contents = empty}\n\t";
-    }
-
-    let hexString = hexStringForBytes(dataBuffer, length); 
-
-    let outString = "{length = " + length.valueOf() + " bytes, contents = "
-    outString += hexString.toString() + "}\n\t"
-
-    return outString;
 }
 
 function hexStringForBytes(bytesPtr: NativePointer, length: Object) {
