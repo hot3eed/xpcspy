@@ -7,7 +7,7 @@ export interface IFilter {
 
 export interface IParsingResult {
     key: string | null,
-    format: 'bplist00' | 'bplist15' | 'bplist16',
+    format: 'bplist00' | 'bplist15' | 'bplist16' | 'bplist17',
     data: string
 }
 

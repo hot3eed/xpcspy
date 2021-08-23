@@ -75,9 +75,24 @@ const _onEnterHandler = function(symbol: string,
 	if (shouldParse) {
 		const messageType = objcObjectDebugDesc(<NativePointer>xpcGetType.call(p_message));
 		if (messageType == 'OS_xpc_dictionary') {
-			const parsingResult = parseBPListKeysRecursively(p_message);
-			if (parsingResult.length > 0) {
-				messageDesc = formatMessageDescription(messageDesc, parsingResult);
+
+			if(messageDesc.includes('"root"')) {
+				let decoder = ObjC.classes.NSXPCDecoder.alloc().init();
+				decoder["- set_connection:"](p_connection);
+
+				decoder["- _startReadingFromXPCObject:"](p_message);
+				
+				messageDesc = formatMessageDescription(messageDesc, [{
+					format: "bplist17",
+					data: decoder.debugDescription(),
+					key: "root"
+				}]);
+				decoder.dealloc();
+			} else {
+				const parsingResult = parseBPListKeysRecursively(p_message);
+				if (parsingResult.length > 0) {
+					messageDesc = formatMessageDescription(messageDesc, parsingResult);
+				}
 			}
 		} // Parse `OS_xpc_data` as well?
 	}
