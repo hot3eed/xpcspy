@@ -5,9 +5,15 @@ export interface IFilter {
     connectionNamePattern: string
 }
 
+export type SupportedBPListFormat =
+    "bplist00" |
+    "bplist15" |
+    "bplist16" |
+    "bplist17";
+
 export interface IParsingResult {
     key: string | null,
-    format: 'bplist00' | 'bplist15' | 'bplist16',
+    format: SupportedBPListFormat,
     data: string
 }
 

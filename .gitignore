@@ -5,3 +5,4 @@ _agent.js
 */node_modules
 xpcspy.egg-info/
 dist/
+venv/
