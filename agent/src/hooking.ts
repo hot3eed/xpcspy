@@ -45,8 +45,8 @@ export function installHooks(filter: IFilter, shouldParse: boolean) {
 	});
 }
 
-const _onEnterHandler = function(symbol: string, 
-								args: InvocationArguments, 
+const _onEnterHandler = function(symbol: string,
+								args: InvocationArguments,
 								connectionNamePattern: string,
 								shouldParse: boolean): void {
 	const p_connection = new NativePointer(args[0]);
@@ -65,35 +65,21 @@ const _onEnterHandler = function(symbol: string,
 		type: 'agent:trace:symbol',
 		message: {timestamp: ts, symbol: symbol}
 	});
-	
+
 	let connectionDesc = objcObjectDebugDesc((p_connection));
 	// connectionDesc = formatConnectionDescription(connectionDesc);  // This is buggy, fix it later
-	
+
 	const p_message = new NativePointer(args[1]);
 	let messageDesc = objcObjectDebugDesc(p_message);
+
 
 	if (shouldParse) {
 		const messageType = objcObjectDebugDesc(<NativePointer>xpcGetType.call(p_message));
 		if (messageType == 'OS_xpc_dictionary') {
-
-			if(messageDesc.includes('"root"')) {
-				let decoder = ObjC.classes.NSXPCDecoder.alloc().init();
-				decoder["- set_connection:"](p_connection);
-
-				decoder["- _startReadingFromXPCObject:"](p_message);
-				
-				messageDesc = formatMessageDescription(messageDesc, [{
-					format: "bplist17",
-					data: decoder.debugDescription(),
-					key: "root"
-				}]);
-				decoder.dealloc();
-			} else {
-				const parsingResult = parseBPListKeysRecursively(p_message);
-				if (parsingResult.length > 0) {
-					messageDesc = formatMessageDescription(messageDesc, parsingResult);
-				}
-			}
+            const parsingResult = parseBPListKeysRecursively(p_connection, p_message);
+            if (parsingResult.length > 0) {
+                messageDesc = formatMessageDescription(messageDesc, parsingResult);
+            }
 		} // Parse `OS_xpc_data` as well?
 	}
 

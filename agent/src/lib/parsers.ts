@@ -1,5 +1,5 @@
-import { IParsingResult } from '../lib/interfaces';
-import { isSupportedBPListData, objcObjectDebugDesc } from '../lib/helpers';
+import { IParsingResult, SupportedBPListFormat } from '../lib/interfaces';
+import { objcObjectDebugDesc } from '../lib/helpers';
 import { xpcGetType, 
         xpcDictionaryApply,
         __CFBinaryPlistCreate15, 
@@ -7,7 +7,10 @@ import { xpcGetType,
         xpcDataGetLength} from '../lib/systemFunctions';
 import { resourceLimits } from 'worker_threads';
 
-export function parseBPListKeysRecursively(xpcDict: NativePointer): IParsingResult[] {
+export function parseBPListKeysRecursively(
+    connection: NativePointer,
+    xpcDict: NativePointer
+): IParsingResult[] {
     const objType = objcObjectDebugDesc(<NativePointer>xpcGetType.call(xpcDict));
     if (objType != 'OS_xpc_dictionary') { throw Error("Bad object type " + objType); }
 
@@ -20,16 +23,27 @@ export function parseBPListKeysRecursively(xpcDict: NativePointer): IParsingResu
         const valueType = objcObjectDebugDesc(<NativePointer>xpcGetType.call(value));
         switch (valueType) {
             case 'OS_xpc_dictionary':
-                parsingResult.push(...parseBPListKeysRecursively(value));
+                parsingResult.push(...parseBPListKeysRecursively(connection, value));
                 break;
             case 'OS_xpc_data':
                 const bytesPtr = <NativePointer>xpcDataGetBytesPtr.call(value);
-                if (isSupportedBPListData(bytesPtr)) {
-                    const length = <number>xpcDataGetLength.call(value);
-                    const r = parseBPList(bytesPtr, length);
-                    r.key = key.readCString();
-                    parsingResult.push(r);
-                }    
+                const format = bytesPtr.readCString(8);
+                if (!format.startsWith("bplist")) {
+                    break;
+                }
+
+                const length = xpcDataGetLength.call(value) as number;
+                let result: IParsingResult;
+
+                if (isKnownBPListData(format)) {
+                    result = parseKnownBPList(bytesPtr, length);
+                } else {
+                    result = parseGenericBPList(connection, xpcDict);
+                    result.format = format as SupportedBPListFormat;
+                }
+
+                result.key = key.readCString();
+                parsingResult.push(result);
                 break;
             default:
                 break;
@@ -48,23 +62,46 @@ export function parseBPListKeysRecursively(xpcDict: NativePointer): IParsingResu
 }
 
 
-function parseBPList(bytesPtr: NativePointer, length: number): IParsingResult {
+function parseKnownBPList(
+    bytesPtr: NativePointer,
+    length: number
+): IParsingResult {
     /**
      * Parse binary plist data after detecting its format
      */
 
-   const bplistFmt = bytesPtr.readCString(8);
-   if (bplistFmt == 'bplist15') {
-       return {
-           key: null,
-           data: objcObjectDebugDesc(<NativePointer>__CFBinaryPlistCreate15.call(bytesPtr, length, ptr(0x0))),
-           format: 'bplist15'
-       }
-   } else if (bplistFmt == 'bplist00') {
-       return parseBPlist00(bytesPtr, length);
-   } // Add bplist16 serialization
+    const bplistFmt = bytesPtr.readCString(8);
+    if (bplistFmt == 'bplist15') {
+        return {
+            key: null,
+            data: objcObjectDebugDesc(<NativePointer>__CFBinaryPlistCreate15.call(bytesPtr, length, ptr(0x0))),
+            format: 'bplist15'
+        }
+    } else if (bplistFmt == 'bplist00') {
+        return parseBPlist00(bytesPtr, length);
+    }
+
+    throw new Error("Unknown bplist format");
 }
 
+function parseGenericBPList(
+    connection: NativePointer,
+    message: NativePointer
+): IParsingResult {
+    const decoder = ObjC.classes.NSXPCDecoder.alloc().init();
+    decoder["- set_connection:"](connection);
+    decoder["- _startReadingFromXPCObject:"](message);
+
+    /* TODO: return only the data object, let the user provide format and key */
+    const result = {
+        format: null,
+        data: decoder.debugDescription(),
+        key: null,
+    };
+
+    decoder.dealloc();
+    return result;
+}
 
 function parseBPlist00(bytesPtr: NativePointer, length: number): IParsingResult {
     const data: NativePointer = ObjC.classes.NSData.dataWithBytes_length_(bytesPtr, length);
@@ -77,4 +114,8 @@ function parseBPlist00(bytesPtr: NativePointer, length: number): IParsingResult 
         data: objcObjectDebugDesc(plist),
         format: 'bplist00'
     }
+}
+
+function isKnownBPListData(magic: string): boolean {
+    return magic === "bplist00" || magic === "bplist15";
 }

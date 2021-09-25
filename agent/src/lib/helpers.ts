@@ -104,10 +104,3 @@ function hexStringForBytes(bytesPtr: NativePointer, length: Object) {
 
     return hexString; 
 }
-
-
-
-export function isSupportedBPListData(bytesPtr: NativePointer): boolean {
-    const magic = bytesPtr.readCString(8);
-    return magic == 'bplist00' || magic == 'bplist15' || magic == 'bplist17'; 
-}
