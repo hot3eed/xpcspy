@@ -13,15 +13,15 @@ class XPCSpyApplication(ConsoleApplication, UI):
         return True
 
     def _add_options(self, parser):
-        parser.add_option('-t', '--filter', 
+        parser.add_option('-t', '--filter',
                         help="Filter by message direction and service name. 'i' denotes incoming and 'o' denotes outgoing. Service name can include the wildcard character '*'. For exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.",
                         metavar='FILTER', type='string')
         parser.add_option('-r', '--parse',
-                        help="Parse XPC dictionary keys that include either `bplist00` or `bplist16` data.",
-                        metavar='SHOULD_PARSE', action='store_true') 
+                        help="Parse XPC dictionary keys that include `bplist` data. Currently `bplist00` and `bplist16` are officially supported, while `bplist15` and `bplist17` support is still experimental.",
+                        metavar='SHOULD_PARSE', action='store_true')
         # parser.add_option('-o', '--output', help="dump output to file OUTPUT", metavar='OUTPUT', type='string')
         parser.add_option('-d', '--print-date',
-                        help='Print a current timestamp before every XPC message', 
+                        help='Print a current timestamp before every XPC message',
                         action='store_true', default=False)
 
     def _initialize(self, parser, options, args):

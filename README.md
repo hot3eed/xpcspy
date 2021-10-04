@@ -39,8 +39,10 @@ Options:
                         denotes incoming and 'o' denotes outgoing. Service
                         name can include the wildcard character '*'. For
                         exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.
-  -r, --parse           Parse XPC dictionary keys that include either
-                        `bplist00` or `bplist16` data.
+  -r, --parse           Parse XPC dictionary keys that include `bplist` data.
+                        Currently `bplist00` and `bplist16` are officially
+                        supported, while `bplist15` and `bplist17` support is
+                        still experimental..
   -d, --print-date      Print a current timestamp before every XPC message
 ```
 ![screenshot_1.png](assets/screenshot_1.png)
@@ -51,7 +53,6 @@ Options:
 
 
 ## TODO:
-* Add support for `bplist16`.
 * Deserialize data within the parsed `bplist`s recursively.
 * Improve script loading performance, kinda slow for some reason.
 * Add an option to get the address, perhaps ASLR adjusted, for the XPC event handler, by spawning the process and hooking `xpc_connection_set_event_handler`.

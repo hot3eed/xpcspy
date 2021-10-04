@@ -13,7 +13,6 @@ import { parseBPListKeysRecursively } from './lib/parsers';
 /**
  * TODO:
  *  - Use a class for the agent, makes more sense to store `shouldParse` and so on there.
- *  - Add `bplist16` serialization.
  *  - Add option to fetch the process' name in the connection description.
  * 	- Handle peer connections more explicitly; they have no name.
  * 	- Add option to filter services by pid.
