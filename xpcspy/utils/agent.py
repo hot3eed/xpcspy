@@ -40,6 +40,7 @@ class Agent:
 
         if mtype == 'agent:hooks_installed':
             ui._update_status("Hooks installed, intercepting messages...")
+            ui._resume()
         elif mtype == 'agent:trace:symbol':
             symbol = message['payload']['message']['symbol']
             timestamp = message['payload']['message']['timestamp']
