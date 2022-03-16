@@ -7,22 +7,22 @@ from ..lib.types import Filter
 
 class XPCSpyApplication(ConsoleApplication, UI):
     def _usage(self):
-        return "usage: %prog [options] target"
+        return "usage: %%prog [options] target"
 
     def _needs_target(self):
         return True
 
     def _add_options(self, parser):
-        parser.add_option('-t', '--filter',
+        parser.add_argument('-t', '--filter',
                         help="Filter by message direction and service name. 'i' denotes incoming and 'o' denotes outgoing. Service name can include the wildcard character '*'. For exmaple 'i:com.apple.*' or 'o:com.apple.apsd'.",
-                        metavar='FILTER', type='string')
-        parser.add_option('-r', '--parse',
+                        dest='filter')
+        parser.add_argument('-r', '--parse',
                         help="Parse XPC dictionary keys that include `bplist` data. Currently `bplist00` and `bplist16` are officially supported, while `bplist15` and `bplist17` support is still experimental.",
-                        metavar='SHOULD_PARSE', action='store_true')
+                        dest='parse', action='store_true')
         # parser.add_option('-o', '--output', help="dump output to file OUTPUT", metavar='OUTPUT', type='string')
-        parser.add_option('-d', '--print-date',
+        parser.add_argument('-d', '--print-date',
                         help='Print a current timestamp before every XPC message',
-                        action='store_true', default=False)
+                        dest='print_date', default=False)
 
     def _initialize(self, parser, options, args):
         if options.filter:
