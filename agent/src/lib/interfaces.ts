@@ -9,7 +9,8 @@ export type SupportedBPListFormat =
     "bplist00" |
     "bplist15" |
     "bplist16" |
-    "bplist17";
+    "bplist17" |
+    null;
 
 export interface IParsingResult {
     key: string | null,

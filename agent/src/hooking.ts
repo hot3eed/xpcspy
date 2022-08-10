@@ -50,7 +50,7 @@ const _onEnterHandler = function(symbol: string,
 								shouldParse: boolean): void {
 	const p_connection = new NativePointer(args[0]);
 	const connectionName = (<NativePointer>xpcConnectionGetName.call(p_connection)).readCString();
-	if (connectionNamePattern != '*' && !wildcardMatch(connectionName, connectionNamePattern)) {
+	if (connectionNamePattern != '*' && connectionName && !wildcardMatch(connectionName, connectionNamePattern)) {
 		return;
 	}
 
