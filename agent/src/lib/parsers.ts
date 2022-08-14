@@ -28,7 +28,7 @@ export function parseBPListKeysRecursively(
             case 'OS_xpc_data':
                 const bytesPtr = <NativePointer>xpcDataGetBytesPtr.call(value);
                 const format = bytesPtr.readCString(8);
-                if (!format.startsWith("bplist")) {
+                if (format != null && !format.startsWith("bplist")) {
                     break;
                 }
 
@@ -116,6 +116,6 @@ function parseBPlist00(bytesPtr: NativePointer, length: number): IParsingResult 
     }
 }
 
-function isKnownBPListData(magic: string): boolean {
+function isKnownBPListData(magic: string | null): boolean {
     return magic === "bplist00" || magic === "bplist15";
 }

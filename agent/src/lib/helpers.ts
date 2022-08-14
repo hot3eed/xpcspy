@@ -37,7 +37,7 @@ export function objcObjectDebugDesc(ptr: NativePointer) {
     return objcObject.toString();
 }
 
-export function debugDescriptionForXPCDictionary(xpcDict: ObjC.Object, count) {
+export function debugDescriptionForXPCDictionary(xpcDict: ObjC.Object, count: any) {
 
     let outString = "<OS_xpc_dictionary> { count = " + count + " "; 
     outString += "contents = \n\t"
