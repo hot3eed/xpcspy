@@ -1,2 +1,2 @@
-frida~=15.2.2
-frida-tools~=11.0.0
+frida~=16.0.2
+frida-tools~=12.0.1
